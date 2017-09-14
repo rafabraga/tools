@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import javax.swing.JOptionPane;
+
 import com.tools.model.Sumario;
 import com.tools.model.TipoInformacao;
 import com.tools.model.Venda;
@@ -39,6 +41,7 @@ public class Application {
     // @formatter:off
     public static void main(final String[] args) throws IOException {
         final Path diretorioIn = Paths.get(PATH_DIRETORIO_IN);
+        Application.criarPastas();
         Arrays.asList(diretorioIn.toFile().listFiles())
             .stream()
                 .filter(f -> f.getName().endsWith(EXTENSAO_ARQUIVO_A_PROCESSAR))
@@ -51,6 +54,23 @@ public class Application {
 
     // @formatter:on
     /**
+     * Cria as pastas para entrada e saída de arquivos.
+     */
+    private static void criarPastas() {
+        try {
+            if (!Paths.get(PATH_DIRETORIO_IN).toFile().exists()) {
+                Files.createDirectories(Paths.get(PATH_DIRETORIO_IN));
+            }
+            if (!Paths.get(PATH_DIRETORIO_OUT).toFile().exists()) {
+                Files.createDirectories(Paths.get(PATH_DIRETORIO_OUT));
+            }
+        } catch (final IOException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao criar pastas.");
+        }
+
+    }
+
+    /**
      * Realiza o processamento do arquivo.
      *
      * @param arquivo o {@link File} lido.
@@ -58,6 +78,7 @@ public class Application {
     protected void processarArquivo(final File arquivo) {
         final Sumario sumario = this.montarSumario(arquivo);
         this.gravarArquivo(sumario);
+        JOptionPane.showMessageDialog(null, "Concluído.");
     }
 
     // @formatter:off
@@ -160,7 +181,7 @@ public class Application {
      * @param linha o conteúdo da linha.
      */
     protected void registrarErro(final Integer numeroLinha, final String linha) {
-        System.out.println("Erro ao ler linha " + numeroLinha + " - " + linha);
+        JOptionPane.showMessageDialog(null, "Erro ao ler linha " + numeroLinha + " - " + linha);
     }
 
 }
